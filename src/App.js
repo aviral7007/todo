@@ -1,43 +1,117 @@
 // import './first.css'
-import React, { useState } from "react"
-function App(){
-    const[todo,setTodo]=useState('abc')
-    console.log('hello')
-     const[todos,setTodos]=useState(['todo1','todo2'])
-    return(
+import React, { useState } from "react";
+function App() {
+  const [todo, setTodo] = useState("abc");
+
+  const [todos, setTodos] = useState([
+    { name: "abc", completed: false, editable: false },
+  ]);
+  const [editTodo, setEditTodo] = useState("");
+
+  const deleteItem = (index) => {
+    const updatedTodos = [...todos];
+
+    updatedTodos.splice(index, 1);
+
+    setTodos(updatedTodos);
+  };
+  const addItem = () => {
+    const updatedTodos = [...todos];
+    updatedTodos.push({ name: todo, completed: false, editable: false });
+    setTodos(updatedTodos);
+  };
+
+  const editItem = (index, currentName) => {
+    // setEditTodo(currentName);
+    const updatedTodos = [...todos];
+    updatedTodos[index] = { ...updatedTodos[index], editable: true };
+    setTodos(updatedTodos);
+  };
+  const editItemChange = (e, index) => {
+    const value = e.target.value;
+    setEditTodo(value);
+  };
+  const updatedItem = (index) => {
+    // const value = ;
+    const updatedTodos = [...todos];
+    updatedTodos[index] = {
+      ...updatedTodos[index],
+      name: editTodo,
+      editable: false,
+    };
+    setTodos(updatedTodos);
+  };
+  return (
+    <div>
+      <div>
+        {/* header */}
+        <h1> Things to do </h1>
+      </div>
+      <div style={{ display: "flex" }}>
+        {/* input */}
+        <input
+          type="text"
+          name="todo"
+          value={todo}
+          onChange={(e) => {
+            setTodo(e.target.value);
+          }}
+          placeholder="value"
+        />
         <div>
-            <div>
-                {/* header */}
-                <h1> Things to do </h1>
-
-            </div>
-            <div>
-                {/* input */}
-                <input type='text' name="todo" value={todo} onChange={(e)=>{(setTodo(e.target.value))}} placeholder='value'/>
-            </div>
-            <div>
-                {/* listing */}
-              <ul>{
-                todos.map((item)=>{
-                  return(
-
-                    <li>{item}</li>
-                  )
-                })
-                }
-                    
-                </ul>
-
-            </div>
-            <div>
-                {/* footer */}
-                <button onClick={(e)=>{
-                  const updatedTodos=[...todos]
-                  updatedTodos.push(todo)
-                  setTodos(updatedTodos)
-                }}>Add</button>
-            </div>
+          <button onClick={addItem}>Add</button>
         </div>
-    )
+      </div>
+      <div>
+        {/* listing */}
+        <ul>
+          {todos.map((item, index) => {
+            return (
+              <div
+                key={index}
+                style={{ display: "flex", justifyContent: "space-between" }}
+              >
+                <div>
+                  {/* <input type="checkbox" /> */}
+                  {/* <span>{item.name}</span>
+                  <input name="editTodo" value={item.name} /> */}
+                  {item.editable ? (
+                    <input
+                      name="editTodo"
+                      value={editTodo}
+                      onChange={(e) => {
+                        editItemChange(e, index);
+                      }}
+                    />
+                  ) : (
+                    <span>{item.name}</span>
+                  )}
+                </div>
+
+                <div>
+                  <button
+                    onClick={(e) => {
+                      deleteItem(index, e);
+                    }}
+                  >
+                    delete
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      item.editable
+                        ? updatedItem(index)
+                        : editItem(index, item.name);
+                    }}
+                  >
+                    {item.editable ? "update" : "edit"}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
+  );
 }
 export default App;
