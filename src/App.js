@@ -1,7 +1,7 @@
 // import './first.css'
 import React, { useState } from "react";
 function App() {
-  const [todo, setTodo] = useState("abc");
+  const [todo, setTodo] = useState("");
 
   const [todos, setTodos] = useState([
     { name: "abc", completed: false, editable: false },
@@ -16,31 +16,60 @@ function App() {
     setTodos(updatedTodos);
   };
   const addItem = () => {
-    const updatedTodos = [...todos];
-    updatedTodos.push({ name: todo, completed: false, editable: false });
-    setTodos(updatedTodos);
+    if (!todo) {
+    } else {
+      const updatedTodos = [...todos];
+      updatedTodos.push({ name: todo, completed: false, editable: false });
+      setTodos(updatedTodos);
+      setTodo("");
+    }
   };
 
   const editItem = (index, currentName) => {
     // setEditTodo(currentName);
     const updatedTodos = [...todos];
-    updatedTodos[index] = { ...updatedTodos[index], editable: true };
-    setTodos(updatedTodos);
+    const found = todos.find((item) => item.editable === true);
+    if (!found) {
+      updatedTodos[index] = { ...updatedTodos[index], editable: true };
+      setTodos(updatedTodos);
+      setEditTodo(updatedTodos[index].name);
+    } else {
+      alert("complete first");
+      return;
+    }
   };
   const editItemChange = (e, index) => {
     const value = e.target.value;
     setEditTodo(value);
   };
+
   const updatedItem = (index) => {
     // const value = ;
+
     const updatedTodos = [...todos];
-    updatedTodos[index] = {
-      ...updatedTodos[index],
-      name: editTodo,
-      editable: false,
-    };
+
+    if (!editTodo) {
+      updatedTodos[index] = {
+        ...updatedTodos[index],
+        editable: false,
+      };
+    } else {
+      updatedTodos[index] = {
+        ...updatedTodos[index],
+        name: editTodo,
+        editable: false,
+      };
+    }
+
     setTodos(updatedTodos);
   };
+
+  const handleComplete = (completed, index) => {
+    const updatedTodos = [...todos];
+    updatedTodos[index] = { ...updatedTodos[index], completed:completed };
+    setTodos(updatedTodos);
+  };
+
   return (
     <div>
       <div>
@@ -49,6 +78,7 @@ function App() {
       </div>
       <div style={{ display: "flex" }}>
         {/* input */}
+
         <input
           type="text"
           name="todo"
@@ -72,6 +102,16 @@ function App() {
                 style={{ display: "flex", justifyContent: "space-between" }}
               >
                 <div>
+                  <input
+                    type="checkbox"
+                    name="completed"
+                    value="completed"
+                    checked={item.completed}
+                    onChange={(e) => {
+                      handleComplete(e.target.checked, index);
+                    }}
+                  />
+
                   {/* <input type="checkbox" /> */}
                   {/* <span>{item.name}</span>
                   <input name="editTodo" value={item.name} /> */}
